@@ -19,7 +19,6 @@ static class Program
         Config.Credentials.deleteCredentials();
         Console.Write(Config.Credentials.readCredential());
 
-<<<<<<< HEAD
         var txt = File.ReadAllLines(@"\\51.12.57.16\drive\Minceraft.txt")
 
             
