@@ -10,20 +10,13 @@ namespace CSVFixService
         public static void FixCSV()
         {
 
-            (string username, string password) = Credentials.readCredential();
-
-            if(username != "" && password != ""){
-                //Perform the autentication against the Network Drive
-                
-            }
-
             string inputFile = CoreConfig.GetInputFile();
             string outputFile = CoreConfig.GetOutputFile();
 
             //Those indexes start at 0
-            byte LicensePlateIndex = 6;
+            byte LicensePlateIndex = 5;
             byte validTillIndex = 16;
-            byte counterIndex = 5;
+            byte counterIndex = 4;
             char separator = ',';
 
 
@@ -53,7 +46,7 @@ namespace CSVFixService
             }
 
             //Count the amount of columns in the header
-            int columnCount = lines[0].Split(separator).Length;
+            int headerColumnCount = lines[0].Split(separator).Length;
 
 
 
@@ -76,14 +69,14 @@ namespace CSVFixService
                 string[] columns = lines[i].Split(separator);
 
                 //Check if the amount of columns is the same as the header
-                if (columns.Length != columnCount)
+                if (columns.Length != headerColumnCount)
                 {
                     continue;
                 }
 
                 //Check if the license plate has special characters and is max 8 characters long
                 //SPACE is also a special character
-                if (Regex.IsMatch(columns[LicensePlateIndex], @"^[A-Za-z0-9ÄÖÜäöü]{0,8}$"))
+                if (!Regex.IsMatch(columns[LicensePlateIndex], @"^[A-Za-z0-9ÄÖÜäöü]{0,8}$"))
                 {
                     continue;
                 }

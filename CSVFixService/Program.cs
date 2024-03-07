@@ -4,28 +4,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Config;
 using CSVFixService;
+using System.Security.Cryptography;
 
 static class Program
 {
     static void Main(string[] args)
     {
-        Config.CoreConfig.readConfig();
-        var test = Config.CoreConfig.isNextRunDue();
 
-        Config.Credentials.setCredential("FAAC", "FAACPWD");
-        Console.Write(Config.Credentials.readCredential());
-        Config.Credentials.changePassword("NEWPWD");
-        Console.Write(Config.Credentials.readCredential());
-        Config.Credentials.deleteCredentials();
-        Console.Write(Config.Credentials.readCredential());
+        //Read Config on program Start
+        CoreConfig.readConfig();
+        ModifyCSV.FixCSV();
 
-        var txt = File.ReadAllLines(@"\\51.12.57.16\drive\Minceraft.txt")
-
-            
-        
-        if (args.Contains("--console")) {
+        if (args.Contains("--console"))
+        {
             Console.WriteLine("Hello World!");
-        } else{
+        }
+        else
+        {
             CreateHostBuilder(args).Build().Run();
         }
     }
@@ -37,16 +32,17 @@ static class Program
             .ConfigureServices((hostContext, services) =>
             {
                 // Fügen Sie hier Dienste hinzu, die als Teil Ihres Services laufen sollen
-                services.AddHostedService<MyWindowsService>(); // MyWindowsService ist ein Beispiel für einen Windows-Service, den Sie implementieren müssen
+                services.AddHostedService<WindowsService>(); // Windows Service
             });
 }
 
-public class MyWindowsService : IHostedService
+public class WindowsService : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {
         // Hier die Logik zum Starten des Services einfügen
         Console.WriteLine("Service gestartet.");
+        Task.Run(() => RunMainServiceLogic(), cancellationToken);
         return Task.CompletedTask;
     }
 
@@ -55,5 +51,22 @@ public class MyWindowsService : IHostedService
         // Hier die Logik zum Stoppen des Services einfügen
         Console.WriteLine("Service gestoppt.");
         return Task.CompletedTask;
+    }
+
+    private void RunMainServiceLogic()
+    {
+        CoreConfig.readConfig();
+
+        while (true)
+        {
+            if (Config.CoreConfig.isNextRunDue())
+            {
+                Config.CoreConfig.registerRun();
+                CSVFixService.ModifyCSV.FixCSV();
+            }
+            Config.CoreConfig.readConfig();
+
+            Thread.Sleep(TimeSpan.FromMinutes(1));
+        }
     }
 }
