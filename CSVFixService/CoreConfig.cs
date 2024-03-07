@@ -19,6 +19,7 @@ public static class CoreConfig
     private static string OutputFile = ""; // Filepath to the output file, stored in Registry to prevent unauthorized access
     private static string execTime = ""; // "HH:MM" 24h format, stored in Registry to prevent unauthorized access
     private static string lastRun = ""; // DD-MM-YYYY HH:MM
+    private static string nextRun = ""; // DD-MM-YYYY HH:MM
 
     private static readonly string RegistryPath = "HKEY_LOCAL_MACHINE\\SOFTWARE\\FAAC\\CSVFixer";
 
@@ -42,16 +43,10 @@ public static class CoreConfig
         //TODO: What if the time is change today to be later? It should run again, but with the current logic it will not
         readConfig();
 
+        DateTime nextRun = DateTime.ParseExact(CoreConfig.nextRun, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 
-        //Parse lastRun to DateTime
-        DateTime lastRunDateTime = DateTime.ParseExact(lastRun, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
-
-
-        //Parse the execTime. 
-        //It should be the today Date with the execTime as time
-        DateTime nextRunDateTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " " + execTime, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
-
-        if (nextRunDateTime > lastRunDateTime)
+        
+        if (nextRun < DateTime.Now)
         {
             return true;
         }
@@ -64,12 +59,17 @@ public static class CoreConfig
     {
         //Write the current time to the registry
         Registry.SetValue(RegistryPath, "LASTRUN", DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
+
+        //Write the tomorrow date and the execTime to the registry
+        Registry.SetValue(RegistryPath, "NEXTRUN", DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + " " + execTime);
     }
 
 
     /* 
      * This will throw an exception if a value would be null
-     * If lastrun is not set, the lastRunDateTime will be on 01-01-2000 00:00 to ensure the next run will be executed
+     * If lastrun is not set, the lastRunDateTime will be on 01-01-2000 00:00
+     * If nextRun is not set, the nextRunDateTime will be on 01-01-2000 00:00 to ensure the task will run
+
     */
     public static void readConfig()
     {
@@ -80,6 +80,7 @@ public static class CoreConfig
         InputFile = (string)Registry.GetValue(RegistryPath, "INPUTFILE", null) ?? "";
         execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null)  ?? "";
         lastRun = (string)Registry.GetValue(RegistryPath, "LASTRUN", null)  ?? "";
+        nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null)  ?? "";
 
         if (OutputFile == "")
         {
@@ -92,6 +93,10 @@ public static class CoreConfig
         if (execTime == "")
         {
             throw new Exception("EXECTIME not found in registry");
+        }
+        if(nextRun == "")
+        {
+            nextRun = "01-01-2000 00:00";
         }
         if (lastRun == "")
         {

@@ -10,7 +10,6 @@ static class Program
 
         //Read Config on program Start
         CoreConfig.readConfig();
-        CSVFix.FixCSV();
 
         if (args.Contains("--console"))
         {

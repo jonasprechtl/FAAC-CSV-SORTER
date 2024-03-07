@@ -1,0 +1,12 @@
+User Services are set by the Service. The service is just run as the user, that has access to the nas.
+
+
+
+I have to develop a logic for the software to access a specific file / Folder in regards of permissions
+The Registry only works if the service is acutally a service
+
+dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+sc create FAACCSVFIX binPath= "C:\temp\CSVFixService.exe" DisplayName= "FAAC CSV Reparatur"
+
+
+Each run sets the nextrun time, and then it is only checked if the time is in the past;
