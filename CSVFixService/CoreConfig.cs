@@ -45,12 +45,11 @@ public static class CoreConfig
 
         DateTime nextRun = DateTime.ParseExact(CoreConfig.nextRun, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 
-        
+        //If next run is in past
         if (nextRun < DateTime.Now)
         {
             return true;
         }
-
 
         return false;
     }
@@ -73,6 +72,8 @@ public static class CoreConfig
     */
     public static void readConfig()
     {
+
+        verifyConfig();
         //Read the config from the registry
         //If not found, throw an exception
 
@@ -103,7 +104,30 @@ public static class CoreConfig
             lastRun = "01-01-2000 00:00";
         }
 
+    }
+
+    //if the exectime was changed, the next run should be updated. This function will be called every time the config is read to ensure correct data
+    private static void verifyConfig(){
+        string execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null)  ?? "";
+        string nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null)  ?? "";
+
+        //Parse execTime and nextRun as DateTime
+        DateTime execTimeDateTime = DateTime.ParseExact(execTime, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+        DateTime nextRunDateTime = DateTime.ParseExact(nextRun, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+
+        if(nextRun == ""){
+            return;
+        }
+
+        //check if the execTime matches the time on the nextRun
+        if(execTimeDateTime.Hour != nextRunDateTime.Hour || execTimeDateTime.Minute != nextRunDateTime.Minute){
+            //If not, update the nextRun to the new execTime. Keep the date the same, only update the time
+            Registry.SetValue(RegistryPath, "NEXTRUN", nextRunDateTime.ToString("dd-MM-yyyy") + " " + execTime);
+        }
 
     }
+
 }
+
+
 }
