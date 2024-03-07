@@ -128,3 +128,75 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+
+# C# .net
+## Allgemeine .NET- und Visual Studio-Dateien zu ignorieren
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.sln.docstates
+*.useropts
+*.v12.suo
+*.v14.suo
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.sdf
+*.mdf
+*.ldf
+*.dbmdl
+*.jfm
+*.tlog
+*.tlogs
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.swp
+*.vbproj.user
+*.csproj.user
+*.dbproj.schemaview
+.ipch/
+*.pch
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Resharper / Rider
+.idea/
+*.resharper
+*.DotSettings.user
+
+# User-specific files
+*.rsuser
+*.resharper*
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.history/
+.backup/
