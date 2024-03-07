@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Config;
-using CSVFixService;
+using FileModify;
 
 static class Program
 {
@@ -10,7 +10,7 @@ static class Program
 
         //Read Config on program Start
         CoreConfig.readConfig();
-        ModifyCSV.FixCSV();
+        CSVFix.FixCSV();
 
         if (args.Contains("--console"))
         {
@@ -59,7 +59,7 @@ public class WindowsService : IHostedService
             if (CoreConfig.isNextRunDue())
             {
                 CoreConfig.registerRun();
-                ModifyCSV.FixCSV();
+                CSVFix.FixCSV();
             }
             CoreConfig.readConfig();
 

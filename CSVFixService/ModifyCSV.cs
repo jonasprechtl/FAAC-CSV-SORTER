@@ -3,10 +3,11 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 using Config;
 
-namespace CSVFixService
+namespace FileModify
 {
-    public class ModifyCSV
+    public class CSVFix
     {
+        //Creates a new CSV that is fixed
         public static void FixCSV()
         {
 
