@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Config;
 using CSVFixService;
-using System.Security.Cryptography;
 
 static class Program
 {
@@ -59,12 +56,12 @@ public class WindowsService : IHostedService
 
         while (true)
         {
-            if (Config.CoreConfig.isNextRunDue())
+            if (CoreConfig.isNextRunDue())
             {
-                Config.CoreConfig.registerRun();
-                CSVFixService.ModifyCSV.FixCSV();
+                CoreConfig.registerRun();
+                ModifyCSV.FixCSV();
             }
-            Config.CoreConfig.readConfig();
+            CoreConfig.readConfig();
 
             Thread.Sleep(TimeSpan.FromMinutes(1));
         }

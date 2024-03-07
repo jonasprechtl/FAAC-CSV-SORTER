@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Security.Principal;
 using Microsoft.Win32.SafeHandles;
 using SimpleImpersonation;
