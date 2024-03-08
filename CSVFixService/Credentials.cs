@@ -37,29 +37,6 @@ namespace Config{
         }
 
 
-
-        public static void changePassword(string newPassword)
-        {
-            // Load the existing credential
-            var credential = new Credential { Target = credTarget };
-            bool success = credential.Load();
-
-            if (!success)
-            {
-                throw new InvalidOperationException("Failed to load the credential for updating. Please ensure the credential exists and the environment supports reading credentials.");
-            }
-
-            // Update the password
-            credential.Password = newPassword;
-
-            // Save the updated credential
-            success = credential.Save();
-            if (!success)
-            {
-                throw new InvalidOperationException("Failed to update the credential. Please ensure the new details are correct and the environment supports saving credentials.");
-            }
-        }
-
         public static void deleteCredentials()
          {
             var credential = new Credential { Target = credTarget };
