@@ -6,8 +6,8 @@
 
         <MajorUpgrade
             DowngradeErrorMessage="Es ist bereits eine neuere Version des [ProductName] installiert." />
-            <Media Id="1" Cabinet="cab1.cab" EmbedCab="yes" />
-            <Media Id="2" Cabinet="cab2.cab" EmbedCab="yes" />
+        <Media Id="1" Cabinet="cab1.cab" EmbedCab="yes" />
+        <Media Id="2" Cabinet="cab2.cab" EmbedCab="yes" />
 
         <Feature Id="ProductFeature" Title="Main Feature" Level="1">
             <ComponentRef Id="Config.exe" />
@@ -16,19 +16,26 @@
 
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
+                <Directory Id="DesktopFolder" />
 
                 <Directory Id="INSTALLFOLDER" Name="FAAC CSV Fixer">
 
                     <Component Id="Config.exe" Guid="*">
+                        <RegistryValue Root="HKLM" Key="SOFTWARE\FAAC\CSVFixer" 
+                            Name="installed" Type="integer" Value="1" KeyPath="yes"/>
                         <File Id="Config.exe" Source="./publish/gui/CSVFixConfigurator.exe"
-                            KeyPath="yes" Checksum="yes" />
-                            <RemoveFile Id="RemoveCSVConfig.exe" Name="CSVFixConfigurator.exe" On="uninstall" />
+                            KeyPath="no" Checksum="yes" />
+                        <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="CSV Fix Configurator"
+                            Target="[INSTALLFOLDER]CSVFixConfigurator.exe" WorkingDirectory="INSTALLFOLDER" />
+                        <RemoveFile Id="RemoveCSVConfig.exe" Name="CSVFixConfigurator.exe"
+                            On="uninstall" />
                     </Component>
 
                     <Component Id="CSVService.exe" Guid="*">
                         <File Id="CSVService.exe" Source="./publish/service/CSVFixService.exe"
                             KeyPath="yes" Checksum="yes" />
-                            <RemoveFile Id="RemoveCSVService.exe" Name="CSVFixService.exe" On="uninstall" />
+                        <RemoveFile Id="RemoveCSVService.exe" Name="CSVFixService.exe"
+                            On="uninstall" />
                         <ServiceInstall
                             Id="ServiceInstaller"
                             Type="ownProcess"
@@ -48,7 +55,7 @@
                 </Directory>
             </Directory>
         </Directory>
-
+        <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
         <UIRef Id="WixUI_InstallDir" />
 
