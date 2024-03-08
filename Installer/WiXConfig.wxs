@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Name="MyProduct" Version="1.0.0.0" Manufacturer="MyCompany"
+        UpgradeCode="bea2dd3a-c193-43a1-8498-9fc2244ee41e" Language="1031">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+        <MajorUpgrade
+            DowngradeErrorMessage="Es ist bereits eine neuere Version des [ProductName] installiert." />
+            <Media Id="1" Cabinet="cab1.cab" EmbedCab="yes" />
+            <Media Id="2" Cabinet="cab2.cab" EmbedCab="yes" />
+
+        <Feature Id="ProductFeature" Title="Main Feature" Level="1">
+            <ComponentRef Id="Config.exe" />
+            <ComponentRef Id="CSVService.exe" />
+        </Feature>
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+
+                <Directory Id="INSTALLFOLDER" Name="FAAC CSV Fixer">
+
+                    <Component Id="Config.exe" Guid="*">
+                        <File Id="Config.exe" Source="./publish/gui/CSVFixConfigurator.exe"
+                            KeyPath="yes" Checksum="yes" />
+                    </Component>
+
+                    <Component Id="CSVService.exe" Guid="*">
+                        <File Id="CSVService.exe" Source="./publish/service/CSVFixService.exe"
+                            KeyPath="yes" Checksum="yes" />
+                        <ServiceInstall
+                            Id="ServiceInstaller"
+                            Type="ownProcess"
+                            Vital="yes"
+                            Name="FAAC CSV Fixer"
+                            DisplayName="FAAC CSV Reparaturdienst"
+                            Description="Repariert die CSV Dateien für die Kennzeichenerkennung der FAAC"
+                            Start="auto"
+                            Account="LocalSystem"
+                            ErrorControl="ignore"
+                            Interactive="no">
+                        </ServiceInstall>
+                        <ServiceControl Id="StartService" Start="install" Stop="both"
+                            Remove="uninstall" Name="FAAC CSV Fixer" Wait="no" />
+                    </Component>
+
+                </Directory>
+            </Directory>
+        </Directory>
+    </Product>
+</Wix>
