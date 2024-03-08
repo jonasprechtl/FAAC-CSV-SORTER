@@ -48,5 +48,9 @@
                 </Directory>
             </Directory>
         </Directory>
+
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+        <UIRef Id="WixUI_InstallDir" />
+
     </Product>
 </Wix>
