@@ -17,12 +17,12 @@ jobs:
       - name: Publish GUI
         run: |
           cd ./CSVFixConfigurator
-          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ../publish/gui
+          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishTrimmed=true --output ../publish/gui
 
       - name: Publish Service
         run: |
           cd ./CSVFixService
-          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ../publish/service
+          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishTrimmed=true --output ../publish/service
 
       - name: Delete pdb files
         run: |
