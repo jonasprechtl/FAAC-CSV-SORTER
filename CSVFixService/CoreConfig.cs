@@ -20,6 +20,7 @@ public static class CoreConfig
     private static string execTime = ""; // "HH:MM" 24h format, stored in Registry to prevent unauthorized access
     private static string lastRun = ""; // DD-MM-YYYY HH:MM
     private static string nextRun = ""; // DD-MM-YYYY HH:MM
+    private static int useAuth = 0; // 0 = do not authenticate, 1 = authenticate
 
     private static readonly string RegistryPath = "HKEY_LOCAL_MACHINE\\SOFTWARE\\FAAC\\CSVFixer";
 
@@ -31,6 +32,13 @@ public static class CoreConfig
     public static string GetOutputFile()
     {
         return OutputFile ?? throw new Exception("OutputFile not set");
+    }
+
+    public static bool shouldUseAuth(){
+        if(useAuth == 0){
+            return false;
+        }
+        return true;
     }
 
     /*
@@ -82,6 +90,7 @@ public static class CoreConfig
         execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null)  ?? "";
         lastRun = (string)Registry.GetValue(RegistryPath, "LASTRUN", null)  ?? "";
         nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null)  ?? "";
+        useAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0);
 
         if (execTime == "")
         {

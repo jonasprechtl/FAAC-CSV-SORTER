@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 using Config;
+using FileOperations;
 
 namespace FileModify
 {
@@ -42,7 +43,13 @@ namespace FileModify
             */
 
             //Read the inputFile
-            string[] lines = System.IO.File.ReadAllLines(inputFile);
+            string[] lines;
+            if( !CoreConfig.shouldUseAuth() ){
+                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, null, null);
+            } else {
+                (string username, string password) = Credentials.readCredential();
+                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, username, password);
+            }
 
             //If lines is empty just return
             if(lines.Length == 0 || lines.Length == 1 ){
@@ -123,7 +130,13 @@ namespace FileModify
                 groupedByLicensePlate[i] = string.Join(separator.ToString(), columns);
             }
 
-            File.WriteAllLines(outputFile, groupedByLicensePlate.Prepend(lines[0])); // Prepend header to the output
+            if(CoreConfig.shouldUseAuth()){
+                (string username, string password) = Credentials.readCredential();
+                AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.ToArray<string>(), username, password);
+            } else {
+            AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.Prepend(lines[0]).ToArray<string>(), null, null); // Prepend header to the output
+
+            }
 
         }
     }
