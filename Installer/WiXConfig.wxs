@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="MyProduct" Version="1.0.0.0" Manufacturer="MyCompany"
+    <Product Id="*" Name="FAAC CSV Fixer" Version="1.0.0.0" Manufacturer="FAAC GmbH"
         UpgradeCode="bea2dd3a-c193-43a1-8498-9fc2244ee41e" Language="1031">
         <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
