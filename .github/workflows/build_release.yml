@@ -40,6 +40,7 @@ jobs:
         run: |
           candle ./Installer/WiXConfig.wxs -out ./Installer/WiXConfig.wixobj
           light ./Installer/WiXConfig.wixobj -ext WixUtilExtension -ext WixUIExtension -b ./ -o ./publish/install/installer.msi
+        continue-on-error: true
 
           
       - name: Upload artifact
