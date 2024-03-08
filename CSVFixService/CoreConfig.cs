@@ -65,9 +65,9 @@ public static class CoreConfig
 
 
     /* 
-     * This will throw an exception if a value would be null
      * If lastrun is not set, the lastRunDateTime will be on 01-01-2000 00:00
      * If nextRun is not set, the nextRunDateTime will be on 01-01-2000 00:00 to ensure the task will run
+     * Input and OutputFile will be set to "" if not defined
 
     */
     public static void readConfig()
@@ -83,17 +83,9 @@ public static class CoreConfig
         lastRun = (string)Registry.GetValue(RegistryPath, "LASTRUN", null)  ?? "";
         nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null)  ?? "";
 
-        if (OutputFile == "")
-        {
-            throw new Exception("OUTPUTFILE not found in registry");
-        }
-        if (InputFile == "")
-        {
-            throw new Exception("INPUTFILE not found in registry");
-        }
         if (execTime == "")
         {
-            throw new Exception("EXECTIME not found in registry");
+            execTime = "10:00";
         }
         if(nextRun == "")
         {

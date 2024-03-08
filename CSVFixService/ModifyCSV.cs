@@ -14,6 +14,9 @@ namespace FileModify
             string inputFile = CoreConfig.GetInputFile();
             string outputFile = CoreConfig.GetOutputFile();
 
+            //If the Files are not set (eg. right after initial start), the method will just return
+            if(inputFile == "" || outputFile == "") return;
+
             //Those indexes start at 0
             byte LicensePlateIndex = 5;
             byte validTillIndex = 16;
