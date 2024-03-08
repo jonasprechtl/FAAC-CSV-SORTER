@@ -7,18 +7,8 @@ static class Program
 {
     static void Main(string[] args)
     {
-
         //Read Config on program Start
-        CoreConfig.readConfig();
-
-        if (args.Contains("--console"))
-        {
-            Console.WriteLine("Hello World!");
-        }
-        else
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+        CreateHostBuilder(args).Build().Run();
     }
 
     // Diese Methode konfiguriert den IHostBuilder für den Betrieb als Windows Service
@@ -34,35 +24,45 @@ static class Program
 
 public class WindowsService : IHostedService
 {
+    private Task _executingTask;
+    private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
         // Hier die Logik zum Starten des Services einfügen
         Console.WriteLine("Service gestartet.");
-        Task.Run(() => RunMainServiceLogic(), cancellationToken);
-        return Task.CompletedTask;
+        _executingTask = Task.Run(() => RunMainServiceLogic(_cts.Token));
+        return _executingTask.IsCompleted ? _executingTask : Task.CompletedTask;
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
         // Hier die Logik zum Stoppen des Services einfügen
         Console.WriteLine("Service gestoppt.");
-        return Task.CompletedTask;
+        if (_executingTask == null)
+        {
+            return;
+        }
+        _cts.Cancel();
+        await Task.WhenAny(_executingTask, Task.Delay(-1, cancellationToken));
     }
 
-    private void RunMainServiceLogic()
+    private async Task RunMainServiceLogic(CancellationToken cancellationToken)
     {
         CoreConfig.readConfig();
 
-        while (true)
+        while (!cancellationToken.IsCancellationRequested)
         {
+
+            CoreConfig.readConfig();
+
             if (CoreConfig.isNextRunDue())
             {
                 CoreConfig.registerRun();
                 CSVFix.FixCSV();
             }
-            CoreConfig.readConfig();
 
-            Thread.Sleep(TimeSpan.FromMinutes(1));
+            await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
         }
     }
 }
