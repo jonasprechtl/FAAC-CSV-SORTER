@@ -15,7 +15,7 @@ namespace FileModify
             string outputFile = CoreConfig.GetOutputFile();
 
             //If the Files are not set (eg. right after initial start), the method will just return
-            if(inputFile == "" || outputFile == "") return;
+            if(inputFile == "" || outputFile == "") throw new InvalidOperationException("Filenames not configured");
 
             //Those indexes start at 0
             byte LicensePlateIndex = 5;

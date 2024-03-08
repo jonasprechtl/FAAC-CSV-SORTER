@@ -58,11 +58,17 @@ public class WindowsService : IHostedService
 
             if (CoreConfig.isNextRunDue())
             {
-                CoreConfig.registerRun();
+                try{
+                    //FixCSV() will throw, if the file is empty. 
+                    //This can happen, when the config is not yet set (eg. first run)
                 CSVFix.FixCSV();
+                CoreConfig.registerRun();
+                }catch(Exception ex){
+
+                }
             }
 
-            await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
         }
     }
 }
