@@ -103,13 +103,15 @@ public static class CoreConfig
         string execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null)  ?? "";
         string nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null)  ?? "";
 
+        if(nextRun == ""){
+            return;
+        }
+
         //Parse execTime and nextRun as DateTime
         DateTime execTimeDateTime = DateTime.ParseExact(execTime, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
         DateTime nextRunDateTime = DateTime.ParseExact(nextRun, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 
-        if(nextRun == ""){
-            return;
-        }
+
 
         //check if the execTime matches the time on the nextRun
         if(execTimeDateTime.Hour != nextRunDateTime.Hour || execTimeDateTime.Minute != nextRunDateTime.Minute){
