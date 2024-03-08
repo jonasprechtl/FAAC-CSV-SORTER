@@ -16,36 +16,43 @@ partial class Form1
     private void InitializeComponent()
     {
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(438, 340);
+        this.ClientSize = new System.Drawing.Size(1020, 210);
+        
         this.Text = "FAAC - Kennzeichenkorrektur";
 
         // Initialize input directory label and text box
         this.lblInputFile = new System.Windows.Forms.Label();
         this.lblInputFile.Text = "Eingabeordner";
-        this.lblInputFile.Location = new System.Drawing.Point(10, 10); // Example location
+        this.lblInputFile.Location = new System.Drawing.Point(10, 20); // Example location
         this.lblInputFile.Anchor = System.Windows.Forms.AnchorStyles.Left; // Example anchor
+        this.lblInputFile.AutoSize = true;
+        
 
         this.txtInputFile = new System.Windows.Forms.TextBox();
-        this.txtInputFile.Location = new System.Drawing.Point(120, 10); // Example location
-        this.txtInputFile.Size = new System.Drawing.Size(308, 20); // Example size
+        this.txtInputFile.Location = new System.Drawing.Point(210, 20); // Example location
+        this.txtInputFile.Size = new System.Drawing.Size(780, 20); // Example size
 
         // Initialize output file label and text box
         this.lblOutputFile = new System.Windows.Forms.Label();
         this.lblOutputFile.Text = "Ausgabedatei";
-        this.lblOutputFile.Location = new System.Drawing.Point(10, 40); // Example location
+        this.lblOutputFile.Location = new System.Drawing.Point(10, 70); // Example location
+         this.lblOutputFile.AutoSize = true;
+
 
         this.txtOutputFile = new System.Windows.Forms.TextBox();
-        this.txtOutputFile.Location = new System.Drawing.Point(120, 40); // Example location
-        this.txtOutputFile.Size = new System.Drawing.Size(308, 20); // Example size
+        this.txtOutputFile.Location = new System.Drawing.Point(210, 70); // Example location
+        this.txtOutputFile.Size = new System.Drawing.Size(780, 20); // Example size
 
         // Initialize execution time label and combo box
         this.lblExecutionTime = new System.Windows.Forms.Label();
         this.lblExecutionTime.Text = "Ausführung um";
-        this.lblExecutionTime.Location = new System.Drawing.Point(10, 70); // Example location
+        this.lblExecutionTime.Location = new System.Drawing.Point(10, 120); // Example location
+        this.lblExecutionTime.AutoSize = true;
+        
 
         this.cmbExecutionTime = new System.Windows.Forms.ComboBox();
-        this.cmbExecutionTime.Location = new System.Drawing.Point(120, 70); // Example location
-        this.cmbExecutionTime.Size = new System.Drawing.Size(120, 20); // Example size
+        this.cmbExecutionTime.Location = new System.Drawing.Point(210, 120); // Example location
+        this.cmbExecutionTime.Size = new System.Drawing.Size(210, 20); // Example size
         this.cmbExecutionTime.DropDownStyle = ComboBoxStyle.DropDownList; // Make the combo box read-only
         // Add some example times to the combo box
 
@@ -61,9 +68,9 @@ partial class Form1
 
         // Initialize the save button
         this.btnSave = new System.Windows.Forms.Button();
-        this.btnSave.Location = new System.Drawing.Point(10, 100); // Example location
-        this.btnSave.Size = new System.Drawing.Size(75, 23); // Example size
-        this.btnSave.Text = "Save";
+        this.btnSave.Location = new System.Drawing.Point(10, 150); // Example location
+        this.btnSave.Size = new System.Drawing.Size(150, 40); // Example size
+        this.btnSave.Text = "Speichern";
         this.btnSave.UseVisualStyleBackColor = true;
         this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 
