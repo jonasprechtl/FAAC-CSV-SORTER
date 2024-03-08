@@ -13,5 +13,6 @@ public partial class Form1 : Form
         this.txtInputFile.Text = vals[0];
         this.txtOutputFile.Text = vals[1];
         this.cmbExecutionTime.SelectedItem = vals[2];
+        this.chkUseAuth.Checked = vals[3] == "1";
     }
 }

@@ -12,6 +12,7 @@ partial class Form1
     private System.Windows.Forms.ComboBox cmbExecutionTime;
     private System.Windows.Forms.Label lblExecutionTime;
     private System.Windows.Forms.Button btnSave;
+private System.Windows.Forms.CheckBox chkUseAuth;
 
     // ... other member variables and methods ...
 
@@ -22,7 +23,7 @@ partial class Form1
 
 
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(1030, 210);
+        this.ClientSize = new System.Drawing.Size(1030, 260);
 
         this.Text = "FAAC - Kennzeichenkorrektur";
 
@@ -90,9 +91,17 @@ partial class Form1
             }
         }
 
+        //Checkbox for USEAUTH
+        this.chkUseAuth = new System.Windows.Forms.CheckBox();
+        this.chkUseAuth.Text = "Authentifizierung verwenden";
+        this.chkUseAuth.Location = new System.Drawing.Point(10, 160); // Example location
+        this.chkUseAuth.AutoSize = true;
+
+
+
         // Initialize the save button
         this.btnSave = new System.Windows.Forms.Button();
-        this.btnSave.Location = new System.Drawing.Point(10, 150); // Example location
+        this.btnSave.Location = new System.Drawing.Point(10, 200); // Example location
         this.btnSave.Size = new System.Drawing.Size(150, 40); // Example size
         this.btnSave.Text = "Speichern";
         this.btnSave.UseVisualStyleBackColor = true;
@@ -108,17 +117,19 @@ partial class Form1
         this.Controls.Add(this.btnSave);
         this.Controls.Add(this.btnInputFile);
         this.Controls.Add(this.btnOutputFile);
+        this.Controls.Add(this.chkUseAuth);
     }
 
     // ... other methods ...
 
     private void btnSave_Click(object sender, EventArgs e)
     {
-        RegConfig.updateValues(this.txtInputFile.Text, this.txtOutputFile.Text, this.cmbExecutionTime.SelectedItem.ToString());
+        RegConfig.updateValues(this.txtInputFile.Text, this.txtOutputFile.Text, this.cmbExecutionTime.SelectedItem.ToString(), this.chkUseAuth.Checked ? 1 : 0);
         string[] newValues = RegConfig.getValues();
         this.txtInputFile.Text = newValues[0];
         this.txtOutputFile.Text = newValues[1];
         this.cmbExecutionTime.SelectedItem = newValues[2];
+        this.chkUseAuth.Checked = newValues[3] == "1";
 
         MessageBox.Show("Die Werte wurden erfolgreich gespeichert", "Erfolg", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
