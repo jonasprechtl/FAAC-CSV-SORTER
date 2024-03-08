@@ -41,8 +41,8 @@
                             ErrorControl="ignore"
                             Interactive="no">
                         </ServiceInstall>
-                        <ServiceControl Id="StartService" Start="install" Stop="both"
-                            Remove="uninstall" Name="FAAC CSV Fixer" Wait="no" />
+                        <ServiceControl Id="StartService" Start="install"
+                            Remove="uninstall" Name="FAAC CSV Fixer" Wait="no" Stop="both" />
                     </Component>
 
                 </Directory>
