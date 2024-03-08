@@ -26,7 +26,8 @@ jobs:
 
       - name: Delete pdb files
         run: |
-          Remove-Item -Path ./publish/*.pdb
+          Remove-Item -Path ./publish/service/*.pdb
+          Remove-Item -Path ./publish/bin/*.pdb
           
       - name: Upload artifact
         uses: actions/upload-artifact@v2
