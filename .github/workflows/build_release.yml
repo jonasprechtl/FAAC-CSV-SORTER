@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -14,9 +14,18 @@ jobs:
         with:
           dotnet-version: 7.0.x
 
-      - name: (Service) Publish
-        run: dotnet publish CSVFixConfigurator/CSVFixConfigurator.csproj -c Release -o ${{ github.workspace }}/out/Service --self-contained true /p:PublishSingleFile=true
+      - name: Publish GUI
+        run: |
+          cd ./CSVFixConfigurator
+          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ../publish/gui
 
-      - name: Publish Windows Service
-        run: dotnet publish ./CSVFixConfigurator/CSVFixConfigurator.csproj --configuration Release --output ./publish/service --runtime win-x64 --self-contained true
+      - name: Publish Service
+        run: |
+          cd ./CSVFixService
+          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ../publish/service
+
+      - name: Delete pdb files
+        run: |
+          Remove-Item -Path ./publish/*.pdb
+          
 
