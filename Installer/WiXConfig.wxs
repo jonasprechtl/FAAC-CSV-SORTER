@@ -22,11 +22,13 @@
                     <Component Id="Config.exe" Guid="*">
                         <File Id="Config.exe" Source="./publish/gui/CSVFixConfigurator.exe"
                             KeyPath="yes" Checksum="yes" />
+                            <RemoveFile Id="RemoveCSVConfig.exe" Name="CSVFixConfigurator.exe" On="uninstall" />
                     </Component>
 
                     <Component Id="CSVService.exe" Guid="*">
                         <File Id="CSVService.exe" Source="./publish/service/CSVFixService.exe"
                             KeyPath="yes" Checksum="yes" />
+                            <RemoveFile Id="RemoveCSVService.exe" Name="CSVFixService.exe" On="uninstall" />
                         <ServiceInstall
                             Id="ServiceInstaller"
                             Type="ownProcess"
