@@ -60,11 +60,12 @@ public class WindowsService : IHostedService
             {
                 try{
                     //FixCSV() will throw, if the file is empty. 
+                    //FixCSV() will throw, if auth is enabled but no credentials are set
                     //This can happen, when the config is not yet set (eg. first run)
-                CSVFix.FixCSV();
-                CoreConfig.registerRun();
+                    CSVFix.FixCSV();
+                    CoreConfig.registerRun();
                 }catch(Exception ex){
-
+                    Console.WriteLine(ex.Message);
                 }
             }
 
