@@ -17,3 +17,6 @@ jobs:
       - name: (Service) Publish
         run: dotnet publish CSVFixConfigurator/CSVFixConfigurator.csproj -c Release -o ${{ github.workspace }}/out/Service --self-contained true /p:PublishSingleFile=true
 
+      - name: Publish Windows Service
+        run: dotnet publish ./CSVFixConfigurator/CSVFixConfigurator.csproj --configuration Release --output ./publish/service --runtime win-x64 --self-contained true
+
