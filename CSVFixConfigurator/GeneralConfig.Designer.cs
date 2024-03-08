@@ -1,4 +1,6 @@
-﻿using Config;
+﻿
+
+using Config;
 namespace CSVFixConfigurator;
 
 partial class Form1
@@ -15,9 +17,13 @@ partial class Form1
 
     private void InitializeComponent()
     {
+
+        this.fileBrowserDialog = new System.Windows.Forms.OpenFileDialog();
+
+
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(1020, 210);
-        
+        this.ClientSize = new System.Drawing.Size(1030, 210);
+
         this.Text = "FAAC - Kennzeichenkorrektur";
 
         // Initialize input directory label and text box
@@ -26,29 +32,47 @@ partial class Form1
         this.lblInputFile.Location = new System.Drawing.Point(10, 20); // Example location
         this.lblInputFile.Anchor = System.Windows.Forms.AnchorStyles.Left; // Example anchor
         this.lblInputFile.AutoSize = true;
-        
+
 
         this.txtInputFile = new System.Windows.Forms.TextBox();
         this.txtInputFile.Location = new System.Drawing.Point(210, 20); // Example location
-        this.txtInputFile.Size = new System.Drawing.Size(780, 20); // Example size
+        this.txtInputFile.Size = new System.Drawing.Size(770, 20); // Example size
+
+        // Initialize the input directory select button
+        this.btnInputFile = new System.Windows.Forms.Button();
+        this.btnInputFile.Location = new System.Drawing.Point(990, 20); // Example location
+        this.btnInputFile.Size = new System.Drawing.Size(30, 20); // Example size
+        this.btnInputFile.Text = "...";
+        this.btnInputFile.UseVisualStyleBackColor = true;
+        this.btnInputFile.Click += new System.EventHandler(this.btnInputFile_Click);
+
 
         // Initialize output file label and text box
         this.lblOutputFile = new System.Windows.Forms.Label();
         this.lblOutputFile.Text = "Ausgabedatei";
         this.lblOutputFile.Location = new System.Drawing.Point(10, 70); // Example location
-         this.lblOutputFile.AutoSize = true;
+        this.lblOutputFile.AutoSize = true;
 
 
         this.txtOutputFile = new System.Windows.Forms.TextBox();
         this.txtOutputFile.Location = new System.Drawing.Point(210, 70); // Example location
-        this.txtOutputFile.Size = new System.Drawing.Size(780, 20); // Example size
+        this.txtOutputFile.Size = new System.Drawing.Size(770, 20); // Example size
+
+        // Initialize the output directory select button
+        this.btnOutputFile = new System.Windows.Forms.Button();
+        this.btnOutputFile.Location = new System.Drawing.Point(990, 70); // Example location
+        this.btnOutputFile.Size = new System.Drawing.Size(30, 20); // Example size
+        this.btnOutputFile.Text = "...";
+        this.btnOutputFile.UseVisualStyleBackColor = true;
+        this.btnOutputFile.Click += new System.EventHandler(this.btnOutputFile_Click);
+
 
         // Initialize execution time label and combo box
         this.lblExecutionTime = new System.Windows.Forms.Label();
         this.lblExecutionTime.Text = "Ausführung um";
         this.lblExecutionTime.Location = new System.Drawing.Point(10, 120); // Example location
         this.lblExecutionTime.AutoSize = true;
-        
+
 
         this.cmbExecutionTime = new System.Windows.Forms.ComboBox();
         this.cmbExecutionTime.Location = new System.Drawing.Point(210, 120); // Example location
@@ -82,6 +106,8 @@ partial class Form1
         this.Controls.Add(this.lblExecutionTime);
         this.Controls.Add(this.cmbExecutionTime);
         this.Controls.Add(this.btnSave);
+        this.Controls.Add(this.btnInputFile);
+        this.Controls.Add(this.btnOutputFile);
     }
 
     // ... other methods ...
@@ -96,4 +122,27 @@ partial class Form1
 
         MessageBox.Show("Die Werte wurden erfolgreich gespeichert", "Erfolg", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
+
+
+    private System.Windows.Forms.Button btnInputFile;
+    private System.Windows.Forms.Button btnOutputFile;
+    private System.Windows.Forms.OpenFileDialog fileBrowserDialog;
+
+    private void btnInputFile_Click(object sender, EventArgs e)
+    {
+        if (fileBrowserDialog.ShowDialog() == DialogResult.OK)
+        {
+            this.txtInputFile.Text = fileBrowserDialog.FileName;
+        }
+    }
+
+    private void btnOutputFile_Click(object sender, EventArgs e)
+    {
+        if (fileBrowserDialog.ShowDialog() == DialogResult.OK)
+        {
+            this.txtOutputFile.Text = fileBrowserDialog.FileName;
+        }
+    }
 }
+
+
