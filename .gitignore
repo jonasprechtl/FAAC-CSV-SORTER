@@ -200,3 +200,7 @@ $RECYCLE.BIN/
 # VS Code directories
 .history/
 .backup/
+
+
+# Published files from testing pipeline
+/publish
