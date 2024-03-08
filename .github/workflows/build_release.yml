@@ -27,11 +27,12 @@ jobs:
       - name: Delete pdb files
         run: |
           Remove-Item -Path ./publish/service/*.pdb
-          Remove-Item -Path ./publish/bin/*.pdb
+          Remove-Item -Path ./publish/gui/*.pdb
           
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: publish
           path: ./publish/
+          retention-days: 14
 
