@@ -9,10 +9,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
+
+      - name: Download Wix Toolset
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip" -OutFile "wix311-binaries.zip"
+          Expand-Archive -Path "wix311-binaries.zip" -DestinationPath "./wixtoolset"
+  
+      - name: Add Wix Toolset to PATH
+        run: echo "./wixtoolset" | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8 
 
       - name: Publish GUI
         run: |
