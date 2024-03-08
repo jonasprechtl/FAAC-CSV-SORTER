@@ -17,7 +17,7 @@ jobs:
       - name: Publish GUI
         run: |
           cd ./CSVFixConfigurator
-          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ../publish/gui
+          dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeAllContentForSelfExtract=true --output ../publish/gui
 
       - name: Publish Service
         run: |
@@ -26,13 +26,17 @@ jobs:
 
       - name: Delete pdb files
         run: |
-          Remove-Item -Path ./publish/service/*.pdb
-          Remove-Item -Path ./publish/gui/*.pdb
+          
+      - name: Package Installer
+        run: |
+          candle ./Installer/WiXConfig.wxs -out ./Installer/WiXConfig.wixobj
+          light ./Installer/WiXConfig.wixobj -ext WixUtilExtension -ext WixUIExtension -b ./ -o ./publish/install/installer.msi
+
           
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: publish
-          path: ./publish/
+          path: ./publish/install/installer.msi
           retention-days: 14
 
