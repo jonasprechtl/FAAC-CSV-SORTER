@@ -28,4 +28,9 @@ jobs:
         run: |
           Remove-Item -Path ./publish/*.pdb
           
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: publish
+          path: ./publish/
 
