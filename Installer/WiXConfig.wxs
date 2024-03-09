@@ -20,7 +20,7 @@
 
                 <Directory Id="INSTALLFOLDER" Name="FAAC CSV Fixer">
 
-                    <Component Id="Config.exe" Guid="*">
+                    <Component Id="Config.exe" Guid="b130e5bf-4c8a-41b2-a162-046a1e9d595d">
                         <RegistryValue Root="HKLM" Key="SOFTWARE\FAAC\CSVFixer" 
                             Name="installed" Type="integer" Value="1" KeyPath="yes"/>
                         <File Id="Config.exe" Source="./publish/gui/CSVFixConfigurator.exe"
