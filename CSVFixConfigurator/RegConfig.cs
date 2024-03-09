@@ -11,6 +11,9 @@ namespace Config{
 
         public static int UseAuth = 0; // 0 = do not authenticate, 1 = authenticate
 
+        public static string Username; //USERNAME - The username to be used for authentication (Only if UseAuth = 1)
+        public static string Password; //PASSWORD - The password to be used for authentication (Only if UseAuth = 1)
+
         public static string[] getValues(){
             return new string[] {InputFile, OutputFile, ExecutionTime, UseAuth.ToString()};
         }
@@ -20,7 +23,6 @@ namespace Config{
             OutputFile = (string)Registry.GetValue(RegistryPath, "OUTPUTFILE", null) ?? "";
             ExecutionTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null) ?? "10:00";
             UseAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0);
-            
         }
 
         public static void updateValues(string InputFile, string OutputFile, string ExecutionTime, int UseAuth){
@@ -30,6 +32,15 @@ namespace Config{
             Registry.SetValue(RegistryPath, "USEAUTH", UseAuth);
 
         	loadValuesFromRegistry();
+        }
+
+        public static void updateValues(string InputFile, string OutputFile, string ExecutionTime, int UseAuth, string Username, string Password){
+            if(UseAuth == 1){
+                //In case someone calls this function but UseAuth is 0, just ignore the username and password
+                Registry.SetValue(RegistryPath, "USERNAME", Username);
+                Registry.SetValue(RegistryPath, "PASSWORD", Password);
+            }
+            updateValues(InputFile, OutputFile, ExecutionTime, UseAuth);
         }
             
     }

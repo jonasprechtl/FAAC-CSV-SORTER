@@ -12,7 +12,11 @@ partial class Form1
     private System.Windows.Forms.ComboBox cmbExecutionTime;
     private System.Windows.Forms.Label lblExecutionTime;
     private System.Windows.Forms.Button btnSave;
-private System.Windows.Forms.CheckBox chkUseAuth;
+    private System.Windows.Forms.CheckBox chkUseAuth;
+    private System.Windows.Forms.TextBox txtUsername;
+    private System.Windows.Forms.TextBox txtPassword;
+    private System.Windows.Forms.Label lblUsername;
+    private System.Windows.Forms.Label lblPassword;
 
     // ... other member variables and methods ...
 
@@ -23,7 +27,7 @@ private System.Windows.Forms.CheckBox chkUseAuth;
 
 
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(1030, 260);
+        this.ClientSize = new System.Drawing.Size(1030, 300);
 
         this.Text = "FAAC - Kennzeichenkorrektur";
 
@@ -96,12 +100,40 @@ private System.Windows.Forms.CheckBox chkUseAuth;
         this.chkUseAuth.Text = "Authentifizierung verwenden";
         this.chkUseAuth.Location = new System.Drawing.Point(10, 160); // Example location
         this.chkUseAuth.AutoSize = true;
+        this.chkUseAuth.CheckedChanged += new System.EventHandler(this.chkUseAuth_CheckedChanged);
+
+        //Input for PASSWORD
+        this.lblUsername = new System.Windows.Forms.Label();
+        this.lblUsername.Text = "Benutzername";
+        this.lblUsername.Location = new System.Drawing.Point(10, 190); // Example location
+        this.lblUsername.AutoSize = true;
+        if(this.AuthEnabledOnLoad){
+            lblUsername.Text = "Benutzername (Leer lassen um nicht zu ändern)";
+        }
+
+        this.txtUsername = new System.Windows.Forms.TextBox();
+        this.txtUsername.Location = new System.Drawing.Point(10, 210); // Example location
+        this.txtUsername.Size = new System.Drawing.Size(300, 20); // Example size
+        
+        //Input for USERNAME
+        this.lblPassword = new System.Windows.Forms.Label();
+        this.lblPassword.Text = "Passwort";
+        this.lblPassword.Location = new System.Drawing.Point(340, 190); // Example location
+        this.lblPassword.AutoSize = true;
+        if(this.AuthEnabledOnLoad){
+            lblPassword.Text = "Passwort (Leer lassen um nicht zu ändern)";
+        }
+
+        this.txtPassword = new System.Windows.Forms.TextBox();
+        this.txtPassword.Location = new System.Drawing.Point(340, 210); // Example location
+        this.txtPassword.Size = new System.Drawing.Size(300, 20); // Example size
+        this.txtPassword.PasswordChar = '*'; // Set the password character
 
 
 
         // Initialize the save button
         this.btnSave = new System.Windows.Forms.Button();
-        this.btnSave.Location = new System.Drawing.Point(10, 200); // Example location
+        this.btnSave.Location = new System.Drawing.Point(10, 250); // Example location
         this.btnSave.Size = new System.Drawing.Size(150, 40); // Example size
         this.btnSave.Text = "Speichern";
         this.btnSave.UseVisualStyleBackColor = true;
@@ -118,18 +150,50 @@ private System.Windows.Forms.CheckBox chkUseAuth;
         this.Controls.Add(this.btnInputFile);
         this.Controls.Add(this.btnOutputFile);
         this.Controls.Add(this.chkUseAuth);
+        this.Controls.Add(this.txtUsername);
+        this.Controls.Add(this.txtPassword);
+        this.Controls.Add(this.lblUsername);
+        this.Controls.Add(this.lblPassword);
     }
 
     // ... other methods ...
 
     private void btnSave_Click(object sender, EventArgs e)
     {
-        RegConfig.updateValues(this.txtInputFile.Text, this.txtOutputFile.Text, this.cmbExecutionTime.SelectedItem.ToString(), this.chkUseAuth.Checked ? 1 : 0);
+
+        //If the user has checked the checkbox and password and username are empty, do not change the password (password stays the same)
+
+        //if only one of the two fields is empty, show an error message
+       
+        if (this.chkUseAuth.Checked && !this.AuthEnabledOnLoad && (this.txtUsername.Text == "" || this.txtPassword.Text == ""))
+        {
+            MessageBox.Show("Zum Aktivieren der Authentifizierung geben sie bitte den Benutzernamen und das Passwort ein.", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+         if (this.chkUseAuth.Checked && (this.txtUsername.Text == "" && this.txtPassword.Text != "" || this.txtUsername.Text != "" && this.txtPassword.Text == ""))
+        {
+            MessageBox.Show("Zum Ändern der Anmeldedaten geben Sie bitte den Benutzernamen UND das Passwort ein.", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        if(this.chkUseAuth.Checked && this.txtUsername.Text != "" && this.txtPassword.Text != ""){
+            RegConfig.updateValues(this.txtInputFile.Text, this.txtOutputFile.Text, this.cmbExecutionTime.SelectedItem.ToString(), this.chkUseAuth.Checked ? 1 : 0, this.txtUsername.Text, this.txtPassword.Text);
+        } else {
+            RegConfig.updateValues(this.txtInputFile.Text, this.txtOutputFile.Text, this.cmbExecutionTime.SelectedItem.ToString(), this.chkUseAuth.Checked ? 1 : 0);
+        }
         string[] newValues = RegConfig.getValues();
         this.txtInputFile.Text = newValues[0];
         this.txtOutputFile.Text = newValues[1];
         this.cmbExecutionTime.SelectedItem = newValues[2];
         this.chkUseAuth.Checked = newValues[3] == "1";
+
+        //After saving, the AuthEnabledOnLoad variable has to be updated 
+        //(the user does not have to enter the password and username again if it was already set on last update)
+        //(The User also does have to enter the password and username again if the Authentication was disabled on last update)
+        this.AuthEnabledOnLoad = newValues[3] == "1";
+        setPWDandUSRLabels();
+        clearPWDandUSR();
 
         MessageBox.Show("Die Werte wurden erfolgreich gespeichert", "Erfolg", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
@@ -154,6 +218,29 @@ private System.Windows.Forms.CheckBox chkUseAuth;
             this.txtOutputFile.Text = fileBrowserDialog.FileName;
         }
     }
+
+    //This enables or disables the username and password input fields depending on the checkbox
+    private void chkUseAuth_CheckedChanged(object sender, EventArgs e)
+    {
+        this.txtUsername.Enabled = this.chkUseAuth.Checked;
+        this.txtPassword.Enabled = this.chkUseAuth.Checked;
+    }
+
+    private void setPWDandUSRLabels(){
+        if(this.AuthEnabledOnLoad){
+            lblUsername.Text = "Benutzername (Leer lassen um nicht zu ändern)";
+            lblPassword.Text = "Passwort (Leer lassen um nicht zu ändern)";
+        } else {
+            lblUsername.Text = "Benutzername";
+            lblPassword.Text = "Passwort";
+        }
+    }
+
+    private void clearPWDandUSR(){
+        this.txtUsername.Text = "";
+        this.txtPassword.Text = "";
+    }
+
 }
 
 
