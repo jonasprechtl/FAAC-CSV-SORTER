@@ -49,24 +49,26 @@ public class WindowsService : IHostedService
 
     private async Task RunMainServiceLogic(CancellationToken cancellationToken)
     {
-        CoreConfig.readConfig();
 
         while (!cancellationToken.IsCancellationRequested)
         {
 
-            CoreConfig.readConfig();
-
-            if (CoreConfig.isNextRunDue())
+            try
             {
-                try{
+                CoreConfig.readConfig();
+
+                if (CoreConfig.isNextRunDue())
+                {
                     //FixCSV() will throw, if the file is empty. 
                     //FixCSV() will throw, if auth is enabled but no credentials are set
                     //This can happen, when the config is not yet set (eg. first run)
                     CSVFix.FixCSV();
                     CoreConfig.registerRun();
-                }catch(Exception ex){
-                    Console.WriteLine(ex.Message);
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
 
             await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
