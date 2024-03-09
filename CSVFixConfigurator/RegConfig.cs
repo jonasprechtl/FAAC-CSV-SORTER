@@ -22,7 +22,13 @@ namespace Config{
             InputFile = (string)Registry.GetValue(RegistryPath, "INPUTFILE", null) ?? "";
             OutputFile = (string)Registry.GetValue(RegistryPath, "OUTPUTFILE", null) ?? "";
             ExecutionTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null) ?? "10:00";
-            UseAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0);
+            try{
+                UseAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0);;
+            } catch (System.NullReferenceException){
+                UseAuth = 0;
+            }
+
+
         }
 
         public static void updateValues(string InputFile, string OutputFile, string ExecutionTime, int UseAuth){
