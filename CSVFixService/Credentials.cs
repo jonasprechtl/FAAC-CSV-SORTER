@@ -1,5 +1,3 @@
-
-using System.Runtime.CompilerServices;
 using CredentialManagement;
 
 namespace Config{
@@ -19,6 +17,7 @@ namespace Config{
 
             if(!success) throw new InvalidOperationException("Failed to store the credential. Please ensure the details are correct and the environment supports saving credentials.");
         }
+
 
         /*
             Returns ("","") if no credentials are set. The Program should try it with its own credentials if no credentials are set.
