@@ -35,7 +35,8 @@ namespace Config
 
             Logger.Log("Reading InputFile from Registry", LogLevel.Verbose);
 
-            if(InputFile == null || InputFile == ""){
+            if (InputFile == null || InputFile == "")
+            {
                 Logger.Log("InputFile not set", LogLevel.Error);
                 throw new System.Exception("InputFile not set");
             }
@@ -49,7 +50,8 @@ namespace Config
 
             Logger.Log("Reading OutputFile from Registry", LogLevel.Verbose);
 
-            if(OutputFile == null || OutputFile == ""){
+            if (OutputFile == null || OutputFile == "")
+            {
                 Logger.Log("OutputFile not set", LogLevel.Error);
                 throw new System.Exception("OutputFile not set");
             }
@@ -92,7 +94,8 @@ namespace Config
                 return true;
             }
 
-            if(manualRun == 1){
+            if (manualRun == 1)
+            {
                 Logger.Log("Manual Run is set, running the task", LogLevel.Verbose);
                 return true;
             }
@@ -139,13 +142,25 @@ namespace Config
             execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null) ?? "";
             lastRun = (string)Registry.GetValue(RegistryPath, "LASTRUN", null) ?? "";
             nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null) ?? "";
-            manualRun = (int)Registry.GetValue(RegistryPath, "MANUALRUN", 0);
 
-            try{
-                useAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0);;
-            } catch (System.NullReferenceException){
+            try
+            {
+                useAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0); ;
+            }
+            catch (System.NullReferenceException)
+            {
                 Logger.Log("UserAuth not found in Registry, defaulting to false", LogLevel.Warning);
                 useAuth = 0;
+            }
+
+            try
+            {
+                manualRun = (int)Registry.GetValue(RegistryPath, "MANUALRUN", 0);
+            }
+            catch (System.NullReferenceException)
+            {
+                Logger.Log("ManualRun not found in Registry, defaulting to false", LogLevel.Warning);
+                manualRun = 0;
             }
 
             if (execTime == "")
@@ -154,7 +169,9 @@ namespace Config
                 execTime = "10:00";
                 Logger.Log("This seems to be the first launch of the Software, setting initialLaunchDetected to true", LogLevel.Verbose);
                 initialLaunchDetected = true;
-            } else {
+            }
+            else
+            {
                 Logger.Log("ExecTime is already set, which means this is not the first launch of the Software", LogLevel.Verbose);
                 initialLaunchDetected = false;
             }
@@ -163,12 +180,12 @@ namespace Config
             {
                 Logger.Log("NextRun not set, defaulting to 01-01-2000 00:00", LogLevel.Warning);
                 nextRun = "01-01-2000 00:00";
-            } 
+            }
             if (lastRun == "")
             {
                 Logger.Log("LastRun not set, defaulting to 01-01-2000 00:00", LogLevel.Warning);
                 lastRun = "01-01-2000 00:00";
-            } 
+            }
 
             Logger.Log("Data read from Registry", LogLevel.Verbose);
             Logger.Log("OutputFile: " + OutputFile, LogLevel.Verbose);
@@ -186,7 +203,7 @@ namespace Config
             Logger.Log("Verifying Config", LogLevel.Verbose);
 
 
-            
+
 
             //If there is a USERNAME OR PASSWORD in the registry, set the credentials using the credentials class and delete the registry entry
             //Has to be before the nextRun check, as the function will return if Nextrun does not yet exist, keeping the credentials in the registry 
@@ -240,7 +257,8 @@ namespace Config
 
         }
 
-        public static Dictionary<string, string> GetAllConfigDetails(){
+        public static Dictionary<string, string> GetAllConfigDetails()
+        {
             Logger.Log("Getting all Config Details", LogLevel.Verbose);
             readConfig();
             Dictionary<string, string> configDetails = new Dictionary<string, string>
