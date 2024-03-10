@@ -94,8 +94,9 @@ namespace FileOperations
             Start at 1, as the first line is the header
             */
 
+            int totalLines = lines.Length - 1;
             Logger.Log("Starting first pass", LogLevel.Verbose);
-            Logger.Log("Lines to process: " + (lines.Length - 1), LogLevel.Verbose);
+            Logger.Log("Lines to process: " + totalLines, LogLevel.Verbose);
 
             //output of the first pass
             List<string> firstPassOutput = new List<string>();
@@ -162,6 +163,8 @@ namespace FileOperations
 
             Logger.Log("Second pass done", LogLevel.Verbose);
             Logger.Log("Lines remaining after second pass: " + groupedByLicensePlate.Count, LogLevel.Verbose);
+            Logger.Log("Deleted " + (totalLines - groupedByLicensePlate.Count) + " incorrect lines", LogLevel.Info);
+            Logger.Log("Kept " + groupedByLicensePlate.Count + " correct lines", LogLevel.Info);
 
             if(CoreConfig.shouldUseAuth()){
                 Logger.Log("Writing file with authentication", LogLevel.Info);
