@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Config;
 using FileOperations;
 
-namespace FileModify
+namespace FileOperations
 {
     public class CSVFix
     {
