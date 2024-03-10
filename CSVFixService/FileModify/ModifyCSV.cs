@@ -14,11 +14,11 @@ namespace FileOperations
         public static void FixCSV()
         {
 
-            Logger.Log("Starting to fix the CSV", LogLevel.Info);
+            Logger.Log("Starting to fix the CSV", LogLevel.Verbose);
             string inputFile = CoreConfig.GetInputFile();
-            Logger.Log("Input File: " + inputFile, LogLevel.Info);
+            Logger.Log("Input CSV File: " + inputFile, LogLevel.Info);
             string outputFile = CoreConfig.GetOutputFile();
-            Logger.Log("Output File: " + outputFile, LogLevel.Info);
+            Logger.Log("Output CSV File: " + outputFile, LogLevel.Info);
 
             //If the Files are not set (eg. right after initial start), the method will just return
             if(inputFile == "" || outputFile == "") {
@@ -29,16 +29,16 @@ namespace FileOperations
             //Those indexes start at 0
             //TODO: Maybe make those indexes configurable
             byte LicensePlateIndex = 5;
-            Logger.Log("License Plate Index: " + LicensePlateIndex, LogLevel.Info);
+            Logger.Log("CSV License Plate Index: " + LicensePlateIndex, LogLevel.Verbose);
 
             byte validTillIndex = 16;
-            Logger.Log("Valid Till Index: " + validTillIndex, LogLevel.Info);
+            Logger.Log("CSV Valid Till Index: " + validTillIndex, LogLevel.Verbose);
 
             byte counterIndex = 4;
-            Logger.Log("Counter Index: " + counterIndex, LogLevel.Info);
+            Logger.Log("CSV Incremental Counter Index: " + counterIndex, LogLevel.Verbose);
 
             char separator = ',';
-            Logger.Log("Separator: " + separator, LogLevel.Info);
+            Logger.Log("CSV Separator Symbol: " + separator, LogLevel.Verbose);
 
 
             //Modify the lines
