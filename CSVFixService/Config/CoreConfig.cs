@@ -25,6 +25,8 @@ namespace Config
         private static string nextRun = ""; // DD-MM-YYYY HH:MM
         private static int useAuth = 0; // 0 = do not authenticate, 1 = authenticate
 
+        private static bool initialLaunchDetected = false;
+
         private static readonly string RegistryPath = "HKEY_LOCAL_MACHINE\\SOFTWARE\\FAAC\\CSVFixer";
 
         public static string GetInputFile()
@@ -128,6 +130,7 @@ namespace Config
             execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null) ?? "";
             lastRun = (string)Registry.GetValue(RegistryPath, "LASTRUN", null) ?? "";
             nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null) ?? "";
+
             try{
                 useAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0);;
             } catch (System.NullReferenceException){
@@ -139,18 +142,31 @@ namespace Config
             {
                 Logger.Log("ExecTime not set, defaulting to 10:00", LogLevel.Warning);
                 execTime = "10:00";
+                Logger.Log("This seems to be the first launch of the Software, setting initialLaunchDetected to true", LogLevel.Verbose);
+                initialLaunchDetected = true;
+            } else {
+                Logger.Log("ExecTime is already set, which means this is not the first launch of the Software", LogLevel.Verbose);
+                initialLaunchDetected = false;
             }
+
             if (nextRun == "")
             {
                 Logger.Log("NextRun not set, defaulting to 01-01-2000 00:00", LogLevel.Warning);
                 nextRun = "01-01-2000 00:00";
-            }
+            } 
             if (lastRun == "")
             {
                 Logger.Log("LastRun not set, defaulting to 01-01-2000 00:00", LogLevel.Warning);
                 lastRun = "01-01-2000 00:00";
-            }
+            } 
 
+            Logger.Log("Data read from Registry", LogLevel.Verbose);
+            Logger.Log("OutputFile: " + OutputFile, LogLevel.Verbose);
+            Logger.Log("InputFile: " + InputFile, LogLevel.Verbose);
+            Logger.Log("ExecTime: " + execTime, LogLevel.Verbose);
+            Logger.Log("LastRun: " + lastRun, LogLevel.Verbose);
+            Logger.Log("NextRun: " + nextRun, LogLevel.Verbose);
+            Logger.Log("UseAuth: " + useAuth, LogLevel.Verbose);
         }
 
         //if the exectime was changed, the next run should be updated. This function will be called every time the config is read to ensure correct data
@@ -213,7 +229,25 @@ namespace Config
 
         }
 
+        public static Dictionary<string, string> GetAllConfigDetails(){
+            Logger.Log("Getting all Config Details", LogLevel.Verbose);
+            readConfig();
+            Dictionary<string, string> configDetails = new Dictionary<string, string>
+            {
+                { "InputFile", InputFile },
+                { "OutputFile", OutputFile },
+                { "ExecTime", execTime },
+                { "LastRun", lastRun },
+                { "NextRun", nextRun },
+                { "UseAuth", useAuth == 1 ? "true" : "false"},
+                { "InitialLaunchDetected", initialLaunchDetected ? "true" : "false"}
+            };
+            Logger.Log("Returning Config Details", LogLevel.Verbose);
+            return configDetails;
+        }
+
     }
+
 
 
 }
