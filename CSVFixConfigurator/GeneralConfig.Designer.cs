@@ -29,6 +29,9 @@ partial class Form1
 
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(1030, 300);
+        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+        
 
         this.Text = "FAAC - Kennzeichenkorrektur";
 
