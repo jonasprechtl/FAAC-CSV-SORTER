@@ -49,5 +49,10 @@ namespace Config{
             updateValues(InputFile, OutputFile, ExecutionTime, UseAuth);
         }
             
+
+        public static void initiateManualRun(){
+            //Set the registry value MANUALRUN to 1
+            Registry.SetValue(RegistryPath, "MANUALRUN", 1);
+        }
     }
 }

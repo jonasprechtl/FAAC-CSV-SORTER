@@ -24,6 +24,7 @@ namespace Config
         private static string lastRun = ""; // DD-MM-YYYY HH:MM
         private static string nextRun = ""; // DD-MM-YYYY HH:MM
         private static int useAuth = 0; // 0 = do not authenticate, 1 = authenticate
+        private static int manualRun = 0; // 0 = do not run, 1 = run on next loop
 
         private static bool initialLaunchDetected = false;
 
@@ -81,13 +82,18 @@ namespace Config
             readConfig();
             Logger.Log("Config Refreshed", LogLevel.Verbose);
 
-            Logger.Log("Checking if the next run is in the past", LogLevel.Verbose);
+            Logger.Log("Checking if the next run is in the past or manual run was requested", LogLevel.Verbose);
             DateTime nextRun = DateTime.ParseExact(CoreConfig.nextRun, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 
             //If next run is in past
             if (nextRun < DateTime.Now)
             {
                 Logger.Log("Next run is in the past", LogLevel.Verbose);
+                return true;
+            }
+
+            if(manualRun == 1){
+                Logger.Log("Manual Run is set, running the task", LogLevel.Verbose);
                 return true;
             }
 
@@ -103,6 +109,9 @@ namespace Config
 
             //Write the tomorrow date and the execTime to the registry
             Registry.SetValue(RegistryPath, "NEXTRUN", DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + " " + execTime);
+
+            //Set manualRun to 0
+            Registry.SetValue(RegistryPath, "MANUALRUN", 0);
 
             Logger.Log("Run registered successfully", LogLevel.Verbose);
         }
@@ -130,6 +139,7 @@ namespace Config
             execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null) ?? "";
             lastRun = (string)Registry.GetValue(RegistryPath, "LASTRUN", null) ?? "";
             nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null) ?? "";
+            manualRun = (int)Registry.GetValue(RegistryPath, "MANUALRUN", 0);
 
             try{
                 useAuth = (int)Registry.GetValue(RegistryPath, "USEAUTH", 0);;
@@ -167,6 +177,7 @@ namespace Config
             Logger.Log("LastRun: " + lastRun, LogLevel.Verbose);
             Logger.Log("NextRun: " + nextRun, LogLevel.Verbose);
             Logger.Log("UseAuth: " + useAuth, LogLevel.Verbose);
+            Logger.Log("ManualRun: " + manualRun, LogLevel.Verbose);
         }
 
         //if the exectime was changed, the next run should be updated. This function will be called every time the config is read to ensure correct data
@@ -240,7 +251,8 @@ namespace Config
                 { "LastRun", lastRun },
                 { "NextRun", nextRun },
                 { "UseAuth", useAuth == 1 ? "true" : "false"},
-                { "InitialLaunchDetected", initialLaunchDetected ? "true" : "false"}
+                { "InitialLaunchDetected", initialLaunchDetected ? "true" : "false"},
+                { "ManualRun on next iteration", manualRun == 1 ? "true" : "false"}
             };
             Logger.Log("Returning Config Details", LogLevel.Verbose);
             return configDetails;

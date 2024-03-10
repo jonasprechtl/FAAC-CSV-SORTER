@@ -17,6 +17,7 @@ partial class Form1
     private System.Windows.Forms.TextBox txtPassword;
     private System.Windows.Forms.Label lblUsername;
     private System.Windows.Forms.Label lblPassword;
+    private System.Windows.Forms.Button btnManualRun;
 
     // ... other member variables and methods ...
 
@@ -94,6 +95,14 @@ partial class Form1
                 this.cmbExecutionTime.Items.Add(time);
             }
         }
+        
+        //Button for manual run
+        this.btnManualRun = new System.Windows.Forms.Button();
+        this.btnManualRun.Location = new System.Drawing.Point(440, 120); // Example location
+        this.btnManualRun.Size = new System.Drawing.Size(150, 24); // Example size
+        this.btnManualRun.Text = "Manuellen Lauf starten";
+        this.btnManualRun.Click += new System.EventHandler(this.btnManualRun_Click);
+
 
         //Checkbox for USEAUTH
         this.chkUseAuth = new System.Windows.Forms.CheckBox();
@@ -154,6 +163,7 @@ partial class Form1
         this.Controls.Add(this.txtPassword);
         this.Controls.Add(this.lblUsername);
         this.Controls.Add(this.lblPassword);
+        this.Controls.Add(this.btnManualRun);
     }
 
     // ... other methods ...
@@ -239,6 +249,12 @@ partial class Form1
     private void clearPWDandUSR(){
         this.txtUsername.Text = "";
         this.txtPassword.Text = "";
+    }
+
+    private void btnManualRun_Click(object sender, EventArgs e)
+    {
+        RegConfig.initiateManualRun();
+        MessageBox.Show("Der manuelle Lauf wurde gestartet", "Erfolg", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
 }
