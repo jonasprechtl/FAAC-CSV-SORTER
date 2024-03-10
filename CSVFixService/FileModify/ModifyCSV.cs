@@ -83,6 +83,7 @@ namespace FileOperations
             int headerColumnCount = lines[0].Split(separator).Length;
             Logger.Log("CSV Header Column Count: " + headerColumnCount, LogLevel.Info);
 
+            string header = lines[0];
 
             /*
             First pass:
@@ -165,6 +166,9 @@ namespace FileOperations
             Logger.Log("Lines remaining after second pass: " + groupedByLicensePlate.Count, LogLevel.Verbose);
             Logger.Log("Deleted " + (totalLines - groupedByLicensePlate.Count) + " incorrect lines", LogLevel.Info);
             Logger.Log("Kept " + groupedByLicensePlate.Count + " correct lines", LogLevel.Info);
+
+            //Lastly, add the header to the groupedByLicensePlate list, to add the header to the output
+            groupedByLicensePlate.Insert(0, header);
 
             if(CoreConfig.shouldUseAuth()){
                 Logger.Log("Writing file with authentication", LogLevel.Info);
