@@ -1,8 +1,10 @@
+using System;
 using System.Globalization;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 using Config;
 using FileOperations;
+using Log;
 
 namespace FileOperations
 {
@@ -12,17 +14,31 @@ namespace FileOperations
         public static void FixCSV()
         {
 
+            Logger.Log("Starting to fix the CSV", LogLevel.Info);
             string inputFile = CoreConfig.GetInputFile();
+            Logger.Log("Input File: " + inputFile, LogLevel.Info);
             string outputFile = CoreConfig.GetOutputFile();
+            Logger.Log("Output File: " + outputFile, LogLevel.Info);
 
             //If the Files are not set (eg. right after initial start), the method will just return
-            if(inputFile == "" || outputFile == "") throw new InvalidOperationException("Filenames not configured");
+            if(inputFile == "" || outputFile == "") {
+                Logger.Log("Filenames not configured", LogLevel.Error);
+                throw new InvalidOperationException("Filenames not configured");
+            }
 
             //Those indexes start at 0
+            //TODO: Maybe make those indexes configurable
             byte LicensePlateIndex = 5;
+            Logger.Log("License Plate Index: " + LicensePlateIndex, LogLevel.Info);
+
             byte validTillIndex = 16;
+            Logger.Log("Valid Till Index: " + validTillIndex, LogLevel.Info);
+
             byte counterIndex = 4;
+            Logger.Log("Counter Index: " + counterIndex, LogLevel.Info);
+
             char separator = ',';
+            Logger.Log("Separator: " + separator, LogLevel.Info);
 
 
             //Modify the lines
@@ -45,20 +61,27 @@ namespace FileOperations
             //Read the inputFile
             string[] lines;
             if( !CoreConfig.shouldUseAuth() ){
+                Logger.Log("Reading file without authentication", LogLevel.Info);
                 lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, null, null);
+                Logger.Log("File read", LogLevel.Verbose);
             } else {
+                Logger.Log("Reading file with authentication", LogLevel.Info);
+                Logger.Log("Reading credentials", LogLevel.Verbose);
                 (string username, string password) = Credentials.readCredential();
+                Logger.Log("Credentials read", LogLevel.Verbose);
                 lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, username, password);
+                Logger.Log("File read", LogLevel.Verbose);
             }
 
             //If lines is empty just return
             if(lines.Length == 0 || lines.Length == 1 ){
+                Logger.Log("The Input CSV File is empty or only contains the header", LogLevel.Warning);
                 return;
             }
 
             //Count the amount of columns in the header
             int headerColumnCount = lines[0].Split(separator).Length;
-
+            Logger.Log("CSV Header Column Count: " + headerColumnCount, LogLevel.Info);
 
 
             /*
@@ -70,6 +93,9 @@ namespace FileOperations
 
             Start at 1, as the first line is the header
             */
+
+            Logger.Log("Starting first pass", LogLevel.Verbose);
+            Logger.Log("Lines to process: " + (lines.Length - 1), LogLevel.Verbose);
 
             //output of the first pass
             List<string> firstPassOutput = new List<string>();
@@ -101,12 +127,16 @@ namespace FileOperations
                 firstPassOutput.Add(lines[i]);
 
             }
+            Logger.Log("First pass done", LogLevel.Verbose);
+            Logger.Log("Lines remaining after first pass: " + firstPassOutput.Count, LogLevel.Verbose);
 
             /*
             Second Pass: 
             Remove Duplicated license plates. only keep the one with the longest validity date
             */
 
+            Logger.Log("Starting second pass", LogLevel.Verbose);
+            Logger.Log("Lines to process: " + firstPassOutput.Count, LogLevel.Verbose);
             //Deduplicate the list using registration as the primary key
             //If duplicate is found, keep the registration with the expiration date longest in the Future.
             // Deduplication based on license plate with longest validity
@@ -130,12 +160,21 @@ namespace FileOperations
                 groupedByLicensePlate[i] = string.Join(separator.ToString(), columns);
             }
 
-            if(CoreConfig.shouldUseAuth()){
-                (string username, string password) = Credentials.readCredential();
-                AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.ToArray<string>(), username, password);
-            } else {
-            AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.Prepend(lines[0]).ToArray<string>(), null, null); // Prepend header to the output
+            Logger.Log("Second pass done", LogLevel.Verbose);
+            Logger.Log("Lines remaining after second pass: " + groupedByLicensePlate.Count, LogLevel.Verbose);
 
+            if(CoreConfig.shouldUseAuth()){
+                Logger.Log("Writing file with authentication", LogLevel.Info);
+                Logger.Log("Reading credentials", LogLevel.Verbose);
+                (string username, string password) = Credentials.readCredential();
+                Logger.Log("Credentials read", LogLevel.Verbose);
+                Logger.Log("Writing corrected CSV File", LogLevel.Verbose);
+                AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.ToArray<string>(), username, password);
+                Logger.Log("Corrected CSV File written successfully", LogLevel.Verbose);
+            } else {
+                Logger.Log("Writing file without authentication", LogLevel.Info);
+                AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.Prepend(lines[0]).ToArray<string>(), null, null); // Prepend header to the output
+                Logger.Log("Corrected CSV File written successfully", LogLevel.Verbose);
             }
 
         }
