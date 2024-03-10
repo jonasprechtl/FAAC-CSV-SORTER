@@ -1,6 +1,16 @@
 using System.Diagnostics;
 using Log;
 
+
+/*
+Important note: 
+If the imput is eg. \\51.12.48.50\drive\kfz.csv and output is eg. C:\temp\kfz.new.csv
+the net use command will not work but will NOT throw an error.
+
+The Write (to output) will continue as normal without authentication on the local drive.
+
+So if one needs authentication and the other file is local, just input the credentials and the function will work as normal.
+*/
 namespace FileOperations{
     public class AuthenticatedAccess{
         public static string[] readLinesAuthenticated(string filepath, string? username, string? password){
