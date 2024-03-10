@@ -11,7 +11,7 @@ namespace Log
 
         public static void InitializeLogger()
         {
-            logFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ServiceLog.log");
+            logFile =logFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ServiceLog.log");
             Log("---- FIRST LOG MESSAGE FOR THIS RUN ----", LogLevel.Info);
 
             setLogLevel();
