@@ -65,7 +65,7 @@ public class WindowsService : IHostedService
                 Logger.Log("Checking if next run is due", LogLevel.Verbose);
                 if (CoreConfig.isNextRunDue())
                 {
-                    Logger.Log("Initiating next CSV Fix Run", LogLevel.Info);
+                    Logger.Log("Next run is due, initiating next CSV Fix Run", LogLevel.Info);
                     //FixCSV() will throw, if the file is empty. 
                     //FixCSV() will throw, if auth is enabled but no credentials are set
                     //This can happen, when the config is not yet set (eg. first run)
@@ -76,6 +76,8 @@ public class WindowsService : IHostedService
                     Logger.Log("Registering Run", LogLevel.Verbose);    
                     CoreConfig.registerRun();
                     Logger.Log("Run Registered Successfully", LogLevel.Verbose);
+                } else {
+                    Logger.Log("Next run is not due, skipping CSV Fix Run", LogLevel.Verbose);
                 }
             }
             catch (Exception e)
@@ -85,7 +87,7 @@ public class WindowsService : IHostedService
             }
 
             Logger.Log("Sleeping and waiting for next iteration", LogLevel.Verbose);
-            await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         }
     }
 }
