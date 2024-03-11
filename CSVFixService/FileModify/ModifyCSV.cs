@@ -180,7 +180,7 @@ namespace FileOperations
                 Logger.Log("Corrected CSV File written successfully", LogLevel.Verbose);
             } else {
                 Logger.Log("Writing file without authentication", LogLevel.Info);
-                AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.Prepend(lines[0]).ToArray<string>(), null, null); // Prepend header to the output
+                AuthenticatedAccess.writeLinesAuthenticated(outputFile, groupedByLicensePlate.ToArray<string>(), null, null); // Prepend header to the output
                 Logger.Log("Corrected CSV File written successfully", LogLevel.Verbose);
             }
 
