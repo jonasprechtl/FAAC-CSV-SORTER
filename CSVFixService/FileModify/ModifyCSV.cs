@@ -62,14 +62,14 @@ namespace FileOperations
             string[] lines;
             if( !CoreConfig.shouldUseAuth() ){
                 Logger.Log("Reading file without authentication", LogLevel.Info);
-                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, null, null);
+                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, null, null);
                 Logger.Log("File read", LogLevel.Verbose);
             } else {
                 Logger.Log("Reading file with authentication", LogLevel.Info);
                 Logger.Log("Reading credentials", LogLevel.Verbose);
                 (string username, string password) = Credentials.readCredential();
                 Logger.Log("Credentials read", LogLevel.Verbose);
-                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, username, password);
+                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, username, password);
                 Logger.Log("File read", LogLevel.Verbose);
             }
 
