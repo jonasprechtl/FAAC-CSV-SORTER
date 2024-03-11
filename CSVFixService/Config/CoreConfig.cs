@@ -110,8 +110,33 @@ namespace Config
             //Write the current time to the registry
             Registry.SetValue(RegistryPath, "LASTRUN", DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
 
+
+            /*
+            Consider this case:
+            It is 10:00 01.01.2024
+            Next run is 11:00 01.01.2024
+
+            Now if there is a Manual Run Today, it will also set the Time of the next run to 11:00 02.01.2024 even if the scheduled run did not yet execute
+            
+            So there is a check, if the next execution of the run is today or tomorrow:
+            Scheduled Run: 11:00
+            If it is 10:00 01.01.2024 - set next run to 11:00 01.01.2024
+            If it is 12:00 01.01.2024 - set next run to 11:00 02.01.20024
+            */
+
+            DateTime nextRun = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " " + execTime, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+
+            //if nextRun lies in the past, just add a day as the execTime is already in the past
+            if(nextRun < DateTime.Now){
+                Logger.Log($"The next scheduled Run is Tomorrow, as today the execTime {execTime} is already in the past for today", LogLevel.Verbose);
+                nextRun = nextRun.AddDays(1);
+            } else {
+                Logger.Log($"The next schedules Run is Today, as the execTime {execTime} is in the future for today", LogLevel.Verbose);
+            }
+
+
             //Write the tomorrow date and the execTime to the registry
-            Registry.SetValue(RegistryPath, "NEXTRUN", DateTime.Now.AddDays(1).ToString("dd-MM-yyyy") + " " + execTime);
+            Registry.SetValue(RegistryPath, "NEXTRUN", nextRun.ToString("dd-MM-yyyy HH:mm"));
 
             //Set manualRun to 0
             Registry.SetValue(RegistryPath, "MANUALRUN", 0);
