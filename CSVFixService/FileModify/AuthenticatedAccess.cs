@@ -86,6 +86,7 @@ namespace FileOperations
                 Logger.Log("Successfully deleted CSV File", LogLevel.Verbose);
             }
 
+            //TODO: on error the drive will maybe not be disconnected, this could be improved so it disconnects even if there is an error
             Logger.Log("Disconnecting from Drive", LogLevel.Verbose);
             //disconnect from the drive
             psi = new ProcessStartInfo("cmd", $"/C net use {path} /delete")
