@@ -1,3 +1,4 @@
+using System.Dynamic;
 using Log;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Win32;
@@ -266,17 +267,37 @@ namespace Config
 
             Logger.Log("Parsing nextRun and execTime", LogLevel.Verbose);
             //Parse execTime and nextRun as DateTime
-            DateTime execTimeDateTime = DateTime.ParseExact(execTime, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime todaysExecDateTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " " + execTime, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
             DateTime nextRunDateTime = DateTime.ParseExact(nextRun, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
             Logger.Log("nextRun and execTime parsed", LogLevel.Verbose);
 
 
             //check if the execTime matches the time on the nextRun
-            if (execTimeDateTime.Hour != nextRunDateTime.Hour || execTimeDateTime.Minute != nextRunDateTime.Minute)
+            if (todaysExecDateTime.Hour != nextRunDateTime.Hour || todaysExecDateTime.Minute != nextRunDateTime.Minute)
             {
                 Logger.Log("ExecTime and nextRun do not match, most likely the config was changed very recently", LogLevel.Verbose);
-                //If not, update the nextRun to the new execTime. Keep the date the same, only update the time
-                Registry.SetValue(RegistryPath, "NEXTRUN", nextRunDateTime.ToString("dd-MM-yyyy") + " " + execTime);
+
+                
+
+                //if execTime is in the past for today, change the nextRunDate to tomorrow
+                //else (execTime is not in past for today), change the nextRun Date to today
+                //Note that nextRun might already be tomorrow, maybe it needs to be set back to today
+                DateTime currentDateTime = DateTime.Now;
+
+                //The todays exectime is also used for next day, this is just so the name is not as confusing
+                DateTime nextRunExecDateTime = todaysExecDateTime;
+                
+
+                if(nextRunExecDateTime < currentDateTime){
+                    Logger.Log("ExecTime is in the past for today, nextRun is tomorrow", LogLevel.Verbose);
+                    nextRunExecDateTime = nextRunExecDateTime.AddDays(1);
+                } else {
+                    Logger.Log("ExecTime is not past for today, nextRun to today", LogLevel.Verbose);
+                }
+
+
+
+                Registry.SetValue(RegistryPath, "NEXTRUN", nextRunExecDateTime.ToString("dd-MM-yyyy HH:mm"));
                 Logger.Log("NextRun updated to match the new ExecTime", LogLevel.Verbose);
             }
 
