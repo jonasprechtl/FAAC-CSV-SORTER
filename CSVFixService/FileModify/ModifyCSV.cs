@@ -16,7 +16,9 @@ namespace FileOperations
 
             Logger.Log("Starting to fix the CSV", LogLevel.Verbose);
             string inputFile = CoreConfig.GetInputFile();
-            Logger.Log("Input CSV File: " + inputFile, LogLevel.Info);
+            Logger.Log("Input todelete CSV File: " + inputFile, LogLevel.Info);
+            string inputFile2 = CoreConfig.GetInputFile2();
+            Logger.Log("Input static CSV File: " + inputFile2, LogLevel.Info);
             string outputFile = CoreConfig.GetOutputFile();
             Logger.Log("Output CSV File: " + outputFile, LogLevel.Info);
 
@@ -60,30 +62,69 @@ namespace FileOperations
 
             //Read the inputFile
             string[] lines;
+            string[] lines2;
             if( !CoreConfig.shouldUseAuth() ){
                 Logger.Log("Reading file without authentication", LogLevel.Info);
                 lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, null, null);
-                Logger.Log("File read", LogLevel.Verbose);
+                Logger.Log("ToDelete Input File read", LogLevel.Verbose);
+                lines2 = AuthenticatedAccess.readLinesAuthenticated(inputFile2, false, null, null);
+                Logger.Log("Static Input File read", LogLevel.Verbose);
             } else {
                 Logger.Log("Reading file with authentication", LogLevel.Info);
                 Logger.Log("Reading credentials", LogLevel.Verbose);
                 (string username, string password) = Credentials.readCredential();
                 Logger.Log("Credentials read", LogLevel.Verbose);
                 lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, username, password);
-                Logger.Log("File read", LogLevel.Verbose);
+                Logger.Log("ToDelete read", LogLevel.Verbose);
+                lines2 = AuthenticatedAccess.readLinesAuthenticated(inputFile2, false, username, password);
+                Logger.Log("Static Input File read", LogLevel.Verbose);
             }
 
             //If lines is empty just return
             if(lines.Length == 0 || lines.Length == 1 ){
-                Logger.Log("The Input CSV File is empty or only contains the header", LogLevel.Warning);
+                Logger.Log("The ToDelete Input CSV File is empty or only contains the header", LogLevel.Error);
                 return;
             }
 
+            //If lines2 is empty just return, this file however is allowed to just contain the header
+            if(lines2.Length == 0){
+                Logger.Log("The Static Input CSV File is empty", LogLevel.Error);
+                return;
+            }
+
+
             //Count the amount of columns in the header
             int headerColumnCount = lines[0].Split(separator).Length;
-            Logger.Log("CSV Header Column Count: " + headerColumnCount, LogLevel.Info);
+            Logger.Log("ToDelete CSV Header Column Count: " + headerColumnCount, LogLevel.Info);
+
+            //Count the amount of columns in the header
+            int headerColumnCount2 = lines2[0].Split(separator).Length;
+            Logger.Log("Static CSV Header Column Count: " + headerColumnCount2, LogLevel.Info);
+
+            //Check if the amount of columns in both headers is the same
+            if(headerColumnCount != headerColumnCount2){
+                Logger.Log("The amount of columns in the headers of the two input files is not the same", LogLevel.Error);
+                return;
+            }
 
             string header = lines[0];
+
+            /*
+            Preflight:
+            Merge the two files (excluding the header)
+            The Duplicate check etc. is done in first and second pass
+            */
+
+            Logger.Log("Starting preflight", LogLevel.Verbose);
+            Logger.Log("Merging the two files", LogLevel.Verbose);
+            // -2 because both lines and lines2 have a header, so -1 line for each of them
+            string[] mergedLines = new string[lines.Length + lines2.Length - 2];
+            Array.Copy(lines, 1, mergedLines, 0, lines.Length - 1);
+            Array.Copy(lines2, 1, mergedLines, lines.Length - 1, lines2.Length - 1);
+
+            lines = mergedLines;
+            Logger.Log("Merging done", LogLevel.Verbose);
+
 
             /*
             First pass:
@@ -154,11 +195,11 @@ namespace FileOperations
                 .ToList();
 
 
-            // Add counter to each dataset
+            // Remove the number from the counter column leaving it empty
             for (int i = 0; i < groupedByLicensePlate.Count; i++)
             {
                 string[] columns = groupedByLicensePlate[i].Split(separator).ToArray();
-                columns[counterIndex] = (i + 1).ToString(); // Increment counter starting from 1
+                columns[counterIndex] =  "";
                 groupedByLicensePlate[i] = string.Join(separator.ToString(), columns);
             }
 

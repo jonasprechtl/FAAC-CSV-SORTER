@@ -20,6 +20,7 @@ namespace Config
 
 
         private static string InputFile = ""; // Filepath to the input file, stored in Registry to prevent unauthorized access
+        private static string InputFile2 = ""; // Filepath to the second input file, stored in Registry to prevent unauthorized access
         private static string OutputFile = ""; // Filepath to the output file, stored in Registry to prevent unauthorized access
         private static string execTime = ""; // "HH:MM" 24h format, stored in Registry to prevent unauthorized access
         private static string lastRun = ""; // DD-MM-YYYY HH:MM
@@ -34,7 +35,7 @@ namespace Config
         public static string GetInputFile()
         {
 
-            Logger.Log("Reading InputFile from Registry", LogLevel.Verbose);
+            Logger.Log("Reading InputFile from CoreConfig", LogLevel.Verbose);
 
             if (InputFile == null || InputFile == "")
             {
@@ -46,10 +47,25 @@ namespace Config
             return InputFile;
         }
 
+        public static string GetInputFile2()
+        {
+
+            Logger.Log("Reading InputFile2 from CoreConfig", LogLevel.Verbose);
+
+            if(InputFile2 == null || InputFile2 == "")
+            {
+                Logger.Log("InputFile2 not set", LogLevel.Error);
+                throw new System.Exception("InputFile2 not set");
+            }
+
+            Logger.Log("InputFile2: " + InputFile2, LogLevel.Verbose);
+            return InputFile2;
+        }
+
         public static string GetOutputFile()
         {
 
-            Logger.Log("Reading OutputFile from Registry", LogLevel.Verbose);
+            Logger.Log("Reading OutputFile from CoreConfig", LogLevel.Verbose);
 
             if (OutputFile == null || OutputFile == "")
             {
@@ -165,6 +181,7 @@ namespace Config
             Logger.Log("Reading Data from Registry", LogLevel.Verbose);
             OutputFile = (string)Registry.GetValue(RegistryPath, "OUTPUTFILE", null) ?? "";
             InputFile = (string)Registry.GetValue(RegistryPath, "INPUTFILE", null) ?? "";
+            InputFile2 = (string)Registry.GetValue(RegistryPath, "INPUTFILE2", null) ?? "";
             execTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null) ?? "";
             lastRun = (string)Registry.GetValue(RegistryPath, "LASTRUN", null) ?? "";
             nextRun = (string)Registry.GetValue(RegistryPath, "NEXTRUN", null) ?? "";
@@ -216,6 +233,7 @@ namespace Config
             Logger.Log("Data read from Registry", LogLevel.Verbose);
             Logger.Log("OutputFile: " + OutputFile, LogLevel.Verbose);
             Logger.Log("InputFile: " + InputFile, LogLevel.Verbose);
+            Logger.Log("InputFile2: " + InputFile2, LogLevel.Verbose);
             Logger.Log("ExecTime: " + execTime, LogLevel.Verbose);
             Logger.Log("LastRun: " + lastRun, LogLevel.Verbose);
             Logger.Log("NextRun: " + nextRun, LogLevel.Verbose);
@@ -310,6 +328,7 @@ namespace Config
             Dictionary<string, string> configDetails = new Dictionary<string, string>
             {
                 { "InputFile", InputFile },
+                { "InputFile2", InputFile2 },
                 { "OutputFile", OutputFile },
                 { "ExecTime", execTime },
                 { "LastRun", lastRun },

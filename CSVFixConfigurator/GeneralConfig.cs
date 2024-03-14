@@ -20,9 +20,10 @@ public partial class Form1 : Form
         this.Icon =  this.Icon = new Icon(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("CSVFixConfigurator.logo.ico"));
 
         this.txtInputFile.Text = vals[0];
-        this.txtOutputFile.Text = vals[1];
-        this.cmbExecutionTime.SelectedItem = vals[2];
-        this.chkUseAuth.Checked = vals[3] == "1";
+        this.txtInputFile2.Text = vals[1];
+        this.txtOutputFile.Text = vals[2];
+        this.cmbExecutionTime.SelectedItem = vals[3];
+        this.chkUseAuth.Checked = vals[4] == "1";
         
         //This enables or disables the username and password input fields depending on the checkbox
         this.txtUsername.Enabled = this.chkUseAuth.Checked;

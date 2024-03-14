@@ -6,6 +6,7 @@ namespace Config{
         private static readonly string RegistryPath = "HKEY_LOCAL_MACHINE\\SOFTWARE\\FAAC\\CSVFixer";
 
         public static string InputFile; //INPUTFILE - The file to be read
+        public static string InputFile2; //INPUTFILE2 - The second file to be read
         public static string OutputFile; //OUTPUTFILE - The file to be written
         public static string ExecutionTime; //EXECTIME - The time when the task should be executed (HH:mm)
 
@@ -15,11 +16,12 @@ namespace Config{
         public static string Password; //PASSWORD - The password to be used for authentication (Only if UseAuth = 1)
 
         public static string[] getValues(){
-            return new string[] {InputFile, OutputFile, ExecutionTime, UseAuth.ToString()};
+            return new string[] {InputFile, InputFile2,  OutputFile, ExecutionTime, UseAuth.ToString()};
         }
 
         public static void loadValuesFromRegistry(){
             InputFile = (string)Registry.GetValue(RegistryPath, "INPUTFILE", null) ?? "";
+            InputFile2 = (string)Registry.GetValue(RegistryPath, "INPUTFILE2", null) ?? "";
             OutputFile = (string)Registry.GetValue(RegistryPath, "OUTPUTFILE", null) ?? "";
             ExecutionTime = (string)Registry.GetValue(RegistryPath, "EXECTIME", null) ?? "10:00";
             try{
@@ -31,8 +33,9 @@ namespace Config{
 
         }
 
-        public static void updateValues(string InputFile, string OutputFile, string ExecutionTime, int UseAuth){
+        public static void updateValues(string InputFile, string InputFile2, string OutputFile, string ExecutionTime, int UseAuth){
             Registry.SetValue(RegistryPath, "INPUTFILE", InputFile);
+            Registry.SetValue(RegistryPath, "INPUTFILE2", InputFile2);
             Registry.SetValue(RegistryPath, "OUTPUTFILE", OutputFile);
             Registry.SetValue(RegistryPath, "EXECTIME", ExecutionTime);
             Registry.SetValue(RegistryPath, "USEAUTH", UseAuth);
@@ -40,13 +43,13 @@ namespace Config{
         	loadValuesFromRegistry();
         }
 
-        public static void updateValues(string InputFile, string OutputFile, string ExecutionTime, int UseAuth, string Username, string Password){
+        public static void updateValues(string InputFile, string InputFile2, string OutputFile, string ExecutionTime, int UseAuth, string Username, string Password){
             if(UseAuth == 1){
                 //In case someone calls this function but UseAuth is 0, just ignore the username and password
                 Registry.SetValue(RegistryPath, "USERNAME", Username);
                 Registry.SetValue(RegistryPath, "PASSWORD", Password);
             }
-            updateValues(InputFile, OutputFile, ExecutionTime, UseAuth);
+            updateValues(InputFile, InputFile2, OutputFile, ExecutionTime, UseAuth);
         }
             
 
