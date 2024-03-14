@@ -65,19 +65,21 @@ namespace FileOperations
             string[] lines2;
             if( !CoreConfig.shouldUseAuth() ){
                 Logger.Log("Reading file without authentication", LogLevel.Info);
-                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, null, null);
-                Logger.Log("ToDelete Input File read", LogLevel.Verbose);
+                //Static is read first, cause if there is an error reading static, the todelete input will not be deleted
                 lines2 = AuthenticatedAccess.readLinesAuthenticated(inputFile2, false, null, null);
                 Logger.Log("Static Input File read", LogLevel.Verbose);
+                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, null, null);
+                Logger.Log("ToDelete Input File read", LogLevel.Verbose);
             } else {
                 Logger.Log("Reading file with authentication", LogLevel.Info);
                 Logger.Log("Reading credentials", LogLevel.Verbose);
                 (string username, string password) = Credentials.readCredential();
                 Logger.Log("Credentials read", LogLevel.Verbose);
-                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, username, password);
-                Logger.Log("ToDelete read", LogLevel.Verbose);
+                //Static is read first, cause if there is an error reading static, the todelete input will not be deleted
                 lines2 = AuthenticatedAccess.readLinesAuthenticated(inputFile2, false, username, password);
                 Logger.Log("Static Input File read", LogLevel.Verbose);
+                lines = AuthenticatedAccess.readLinesAuthenticated(inputFile, true, username, password);
+                Logger.Log("ToDelete read", LogLevel.Verbose);
             }
 
             //If lines is empty just return
